@@ -24,3 +24,17 @@ def register(request):
         return render(request, 'register.html', {'form': form})
 
     return render(request, 'register.html', {'form': form})
+
+def login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, 'You are now logged in')
+            return redirect('expenseapp:home')
+        print('not here')
+        messages.success(request, 'Username or Password is incorrect')
+        return render(request, 'login.html')
+    return render(request, 'login.html')
