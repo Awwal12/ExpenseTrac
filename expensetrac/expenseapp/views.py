@@ -3,8 +3,11 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from .forms import CreateUserForm, LoginForm
 # Create your views here.
+
+
 def home(request):
-    return render(request,'base.html')
+    return render(request, 'base.html')
+
 
 def register(request):
     if request.method == 'POST':
@@ -25,7 +28,8 @@ def register(request):
 
     return render(request, 'register.html', {'form': form})
 
-def login(request):
+
+def my_login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
