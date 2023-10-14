@@ -42,3 +42,8 @@ def my_login(request):
         messages.success(request, 'Username or Password is incorrect')
         return render(request, 'login.html')
     return render(request, 'login.html')
+
+def logout_user(request):
+    logout(request)
+    messages.success(request, 'You are now logged out')
+    return redirect('expenseapp:login_user')
