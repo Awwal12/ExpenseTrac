@@ -47,3 +47,6 @@ def logout_user(request):
     logout(request)
     messages.success(request, 'You are now logged out')
     return redirect('expenseapp:login_user')
+
+def dashboard(request):
+    return render(request, 'dashboard.html')
