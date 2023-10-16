@@ -2,6 +2,11 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from .forms import CreateUserForm, LoginForm
+import os
+import json
+from django.conf import settings
+from .models import UserPreference
+from django.contrib import messages
 # Create your views here.
 
 
@@ -24,9 +29,9 @@ def register(request):
             return redirect('expenseapp:home')
     else:
         form = CreateUserForm()
-        return render(request, 'register.html', {'form': form})
+        return render(request, 'auth/register.html', {'form': form})
 
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'auth/register.html', {'form': form})
 
 
 def my_login(request):
@@ -40,13 +45,43 @@ def my_login(request):
             return redirect('expenseapp:home')
         print('not here')
         messages.success(request, 'Username or Password is incorrect')
-        return render(request, 'login.html')
-    return render(request, 'login.html')
+        return render(request, 'auth/login.html')
+    return render(request, 'auth/login.html')
+
 
 def logout_user(request):
     logout(request)
     messages.success(request, 'You are now logged out')
     return redirect('expenseapp:login_user')
 
+
 def dashboard(request):
     return render(request, 'dashboard.html')
+
+
+def preferences(request):
+    currency_data = []
+    file_path = os.path.join(settings.BASE_DIR, 'currencies.json')
+
+    with open(file_path, 'r') as json_file:
+        data = json.load(json_file)
+        for k, v in data.items():
+            currency_data.append({'name': k, 'value': v})
+
+    exists = UserPreference.objects.filter(user=request.user).exists()
+    user_preferences = None
+    if exists:
+        user_preferences = UserPreference.objects.get(user=request.user)
+    if request.method == 'GET':
+
+        return render(request, 'prefer.html', {'currencies': currency_data, 'user_preferences': user_preferences})
+    else:
+
+        currency = request.POST['currency']
+        if exists:
+            user_preferences.currency = currency
+            user_preferences.save()
+        else:
+            UserPreference.objects.create(user=request.user, currency=currency)
+        messages.success(request, 'Changes saved')
+        return render(request, 'prefer.html', {'currencies': currency_data, 'user_preferences': user_preferences})
