@@ -7,6 +7,7 @@ import json
 from django.conf import settings
 from .models import UserPreference
 from django.contrib import messages
+from django.contrib import auth
 # Create your views here.
 
 
@@ -43,16 +44,16 @@ def my_login(request):
             login(request, user)
             messages.success(request, 'You are now logged in')
             return redirect('expenseapp:home')
-        print('not here')
-        messages.success(request, 'Username or Password is incorrect')
+        messages.warning(
+            request, 'Username or Password is incorrect', extra_tags='login')
         return render(request, 'auth/login.html')
     return render(request, 'auth/login.html')
 
 
 def logout_user(request):
-    logout(request)
-    messages.success(request, 'You are now logged out')
-    return redirect('expenseapp:login_user')
+    auth.logout(request)
+    messages.info(request, 'You are now logged out')
+    return redirect('expenseapp:my_login')
 
 
 def dashboard(request):
