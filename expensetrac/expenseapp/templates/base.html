@@ -54,9 +54,12 @@
     <div class="container max-w-full mx-auto sm:px-4">
       <div class="flex flex-wrap ">
         {% include 'partial/sidebar.html' %}
-
+        
+        
         <main role="main" class="px-4 pl-4 pr-4 md:w-3/4 sm:ml-auto lg:w-4/5">
-          {% block content %} {% endblock %}
+          {% block content %}
+          {% include 'partial/_messages.html' %}
+          {% endblock %}
         </main>
       </div>
     </div>
