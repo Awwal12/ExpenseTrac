@@ -49,7 +49,7 @@
               d="M18 5h1v12a2 2 0 0 1-2 2m0 0a2 2 0 0 1-2-2V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v15a2 2 0 0 0 2 2h14ZM10 4h2m-2 3h2m-8 3h8m-8 3h8m-8 3h8M4 4h3v3H4V4Z"
             />
          </svg>
-          <span class="flex-1 ml-3 whitespace-nowrap">My Income</span>
+          <span class="flex-1 ml-3 whitespace-nowrap">Dashboard</span>
           <!-- <span
             class="inline-flex items-center justify-center px-2 ml-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300"
             >Pro</span
@@ -58,7 +58,7 @@
       </li>
       <li>
         <a
-          href="#"
+          href="{% url 'expenses:index' %}"
           class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
         >
           <svg
@@ -76,7 +76,7 @@
               d="M5 2a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1M2 5h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm8 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"
             />
           </svg>
-          <span class="flex-1 ml-3 whitespace-nowrap">My Expenses</span>
+          <span class="flex-1 ml-3 whitespace-nowrap">Expenses</span>
           <!-- <span
             class="inline-flex items-center justify-center px-2 ml-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300"
             >Pro</span
