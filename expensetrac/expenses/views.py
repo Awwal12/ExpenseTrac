@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Category, Expense
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 import json
 from django.http import JsonResponse
 from expenseapp.models import UserPreference
@@ -27,8 +27,16 @@ def index(request):
         # Handle the case where UserPreference is not found
         currency = 'NGN - NIGERIAN NAIRA'  # Set a default currency or handle it as needed
 
+    try:
+        page_obj = paginator.page(page_number)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+
+
     context = {
-        'expenses': expenses,
+        'expenses': page_obj,
         'page_obj': page_obj,
         'currency': currency,
     }
