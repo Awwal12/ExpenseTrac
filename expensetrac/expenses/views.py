@@ -1,12 +1,38 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Category, Expense
 from django.contrib import messages
+from django.contrib.auth.models import User
+from django.core.paginator import Paginator
+import json
+from django.http import JsonResponse
+from expenseapp.models import UserPreference
+import datetime
 # Create your views here.
 
 
+@login_required(login_url='expenseapp:my_login')
 def index(request):
-    return render(request, 'expenses/index.html')
+    categories = Category.objects.all()
+    expenses = Expense.objects.filter(owner=request.user).order_by('-date')
+    paginator = Paginator(expenses, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Query UserPreference for currency
+    try:
+        user_preference = UserPreference.objects.get(user=request.user)
+        currency = user_preference.currency
+    except UserPreference.DoesNotExist:
+        # Handle the case where UserPreference is not found
+        currency = 'NGN - NIGERIAN NAIRA'  # Set a default currency or handle it as needed
+
+    context = {
+        'expenses': expenses,
+        'page_obj': page_obj,
+        'currency': currency,
+    }
+    return render(request, 'expenses/index.html', context)
 
 
 @login_required(login_url='expenseapp:my_login')
@@ -21,7 +47,7 @@ def add_expenses(request):
 
     if request.method == 'POST':
         amount = request.POST['amount']
-        
+
         if not amount:
             messages.error(request, 'Amount is required', extra_tags='expense')
             return render(request, 'expenses/add_expenses.html', context)
@@ -34,11 +60,13 @@ def add_expenses(request):
             return render(request, 'expenses/add_expenses.html', context)
 
         if not category:
-            messages.error(request, 'Category is required', extra_tags='expense')
+            messages.error(request, 'Category is required',
+                           extra_tags='expense')
             return render(request, 'expenses/add_expenses.html', context)
 
         if not description:
-            messages.error(request, 'description is required', extra_tags='expense')
+            messages.error(request, 'description is required',
+                           extra_tags='expense')
             return render(request, 'expenses/add_expenses.html', context)
 
         Expense.objects.create(owner=request.user, amount=amount, date=date,
@@ -47,3 +75,7 @@ def add_expenses(request):
 
         return redirect('expenses:add_expenses')
 
+
+
+def edit_expenses(request):
+    return render(request, 'expenses/edit-expense')
