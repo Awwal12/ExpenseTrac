@@ -86,7 +86,7 @@ Expenses
                     {{expense.date}}
                 </td>
                 <td class="px-6 py-4 text-right">
-                    <a href="{% url 'expenses:edit_expenses'  %}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                    <a href="{% url 'expenses:edit_expenses' id=expense.id %}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                 </td>
             </tr>
             {% endfor %}
