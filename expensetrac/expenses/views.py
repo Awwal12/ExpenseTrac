@@ -8,6 +8,7 @@ import json
 from django.http import JsonResponse
 from expenseapp.models import UserPreference
 import datetime
+from django.db.models import Q
 # Create your views here.
 
 
@@ -84,7 +85,7 @@ def add_expenses(request):
         return redirect('expenses:add_expenses')
 
 
-
+@login_required(login_url='expenseapp:my_login')
 def edit_expenses(request, id):
     expense = Expense.objects.get(pk=id)
     categories = Category.objects.all()
@@ -122,9 +123,41 @@ def edit_expenses(request, id):
 
 
 
-
+@login_required(login_url='expenseapp:my_login')
 def delete_expense(request, id):
     expense = Expense.objects.get(pk=id)
     expense.delete()
     messages.success(request, 'Expense removed')
     return redirect('expenses:index')
+
+
+
+
+
+# def search_expenses(request):
+#     if request.method == 'POST':
+#         search_str = json.loads(request.body).get('searchText')
+#         if not search_str:
+#             return JsonResponse([], safe=False)
+
+#         # Use Q objects for more complex queries
+#         expenses = Expense.objects.filter(
+#             Q(amount__istartswith=search_str) |
+#             Q(date__istartswith=search_str) |
+#             Q(description__icontains=search_str) |
+#             Q(category__icontains=search_str),
+#             owner=request.user
+#         ) 
+
+#         data = list(expenses.values())
+#         return JsonResponse(data, safe=False)
+def search_expenses(request):
+    if request.method == 'POST':
+        search_str = json.loads(request.body).get('searchText')
+        expenses = Expense.objects.filter(
+            amount__istartswith=search_str, owner=request.user) | Expense.objects.filter(
+            date__istartswith=search_str, owner=request.user) | Expense.objects.filter(
+            description__icontains=search_str, owner=request.user) | Expense.objects.filter(
+            category__icontains=search_str, owner=request.user)
+        data = expenses.values()
+        return JsonResponse(list(data), safe=False)
