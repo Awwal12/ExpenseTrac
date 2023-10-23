@@ -21,6 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(('expenseapp.urls', 'expenseapp'), namespace='expenseapp')),
     path('expenses/', include(('expenses.urls', 'expenses'), namespace='expenses')),
-    path('income/', include(('income.urls', 'income'), namespace='income'),
+    path('income/', include(('income.urls', 'income'), namespace='income')),
     path("__reload__/", include("django_browser_reload.urls")),
 ]
