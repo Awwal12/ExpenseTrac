@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 
-class UserIncome(models.Model):
+class Income(models.Model):
     amount = models.FloatField()
     date = models.DateTimeField()
     description = models.TextField()
