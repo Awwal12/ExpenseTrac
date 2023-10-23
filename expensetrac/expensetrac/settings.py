@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'expenseapp',
     'expenses',
+    'income',
     'tailwind',
     'theme',
     'django_browser_reload',
