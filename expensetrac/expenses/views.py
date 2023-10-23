@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Category, Expense
 from django.contrib import messages
@@ -8,7 +8,7 @@ import json
 from django.http import JsonResponse
 from expenseapp.models import UserPreference
 import datetime
-from django.db.models import Q
+
 # Create your views here.
 
 
