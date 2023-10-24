@@ -11,7 +11,7 @@
     <!-- {% if messages %} {% for message in messages %}
     <div
       id="alert-border-2"
-      class="flex justify-start items-center px-4 pl-4 pr-4 md:w-3/4 sm:ml-auto lg:w-4/5 text-red-800 border-t-4 border-red-300 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800" 
+      class="flex items-center justify-start px-4 pl-4 pr-4 text-red-800 border-t-4 border-red-300 md:w-3/4 sm:ml-auto lg:w-4/5 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800" 
       role="alert"
     >
       <svg
@@ -22,7 +22,7 @@
         viewBox="0 0 20 20"
       >
         <path
-          d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"
+        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"
         />
       </svg>
       <div class="ml-3 text-sm font-medium">{{message}}</div>
@@ -39,9 +39,9 @@
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 14 14"
-        >
+          >
           <path
-            stroke="currentColor"
+          stroke="currentColor"
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
@@ -64,6 +64,15 @@
       </div>
     </div>
 
+    
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    {% block scr %}
+    
+    {% endblock%}
+    
   </body>
 </html>
