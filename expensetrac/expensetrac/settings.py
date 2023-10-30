@@ -46,7 +46,16 @@ INSTALLED_APPS = [
     'tailwind',
     'theme',
     'django_browser_reload',
+    'django_elasticsearch_dsl',
 ]
+
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'http://localhost:9200',
+        'http_auth': ('elastic', '*sL6+BLNqv-*bjdTtqr-')
+    },
+}
 
 TAILWIND_APP_NAME = 'theme'
 
