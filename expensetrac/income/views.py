@@ -8,6 +8,8 @@ import json
 from django.http import JsonResponse
 from expenseapp.models import UserPreference
 import datetime
+import csv
+from django.http import HttpResponse
 
 # Create your views here.
 
@@ -147,3 +149,19 @@ def income_source_summary(request):
 
 def stats_view(request):
     return render(request, 'income/stats.html')
+
+
+def export_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=Income.csv' + \
+        str(datetime.datetime.now()) + '.csv'
+
+    writer = csv.writer(response)
+    writer.writerow(['Amount', 'Description', 'Source', 'Date'])
+
+    income = Income.objects.filter(owner=request.user)
+
+    for x in income:
+        writer.writerow([x.amount, x.description, x.source, x.date])
+
+    return response
