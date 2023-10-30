@@ -11,6 +11,12 @@ import datetime
 import csv
 from django.http import HttpResponse
 import xlwt
+import tempfile
+from django.template.loader import render_to_string, get_template
+from weasyprint import HTML
+import tempfile
+from django.db.models import Sum
+import io
 
 # Create your views here.
 
@@ -197,4 +203,19 @@ def export_excel(request):
             ws.write(row_num, col_num, str(row[col_num]), font_style)
     wb.save(response)
 
+    return response
+
+
+def export_pdf(request):
+
+    income = Income.objects.filter(owner=request.user)
+    total_income = income.aggregate(Sum('amount'))['amount__sum']
+
+    html_template = get_template('income/pdf_output.html')
+    html_content = html_template.render({'income': income, 'total': total_income})  # You should pass the context data if needed
+
+    pdf_file = HTML(string=html_content).write_pdf()
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=Income report ' + \
+        str(datetime.datetime.now()) + '.pdf'
     return response
