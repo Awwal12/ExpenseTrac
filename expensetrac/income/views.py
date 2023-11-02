@@ -123,7 +123,7 @@ def search_expenses(request):
         Q(amount__icontains=query) |
         Q(date__icontains=query)
     )
-    return render(request, 'income/search_expense.html', {'page_obj': income, 'query': query, 'currency': currency})
+    return render(request, 'income/search_income.html', {'page_obj': income, 'query': query, 'currency': currency})
 
 def income_source_summary(request):
     todays_date = datetime.date.today()
