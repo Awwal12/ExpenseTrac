@@ -8,8 +8,20 @@ import json
 from django.http import JsonResponse
 from expenseapp.models import UserPreference
 import datetime
-
+from django.db.models import Q
 # Create your views here.
+
+
+def search_expenses(request):
+    query = request.GET.get('q', '')
+
+    # Use Q objects to filter on multiple fields using OR logic
+    expenses = Expense.objects.filter(
+        Q(description__icontains=query) |
+        Q(amount__icontains=query) |
+        Q(date__icontains=query)
+    )
+    return render(request, 'expenses/search_expense.html', {'page_obj': expenses, 'query': query})
 
 
 @login_required(login_url='expenseapp:my_login')
@@ -34,7 +46,6 @@ def index(request):
         page_obj = paginator.page(1)
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
-
 
     context = {
         'expenses': page_obj,
@@ -122,25 +133,12 @@ def edit_expenses(request, id):
         return redirect('expenses:index')
 
 
-
 @login_required(login_url='expenseapp:my_login')
 def delete_expense(request, id):
     expense = Expense.objects.get(pk=id)
     expense.delete()
     messages.success(request, 'Expense removed')
     return redirect('expenses:index')
-
-def search_expenses(request):
-    if request.method == 'POST':
-        search_str = json.loads(request.body).get('searchText')
-        expenses = Expense.objects.filter(
-            amount__istartswith=search_str, owner=request.user) | Expense.objects.filter(
-            date__istartswith=search_str, owner=request.user) | Expense.objects.filter(
-            description__icontains=search_str, owner=request.user) | Expense.objects.filter(
-            category__icontains=search_str, owner=request.user)
-        data = expenses.values()
-        return JsonResponse(list(data), safe=False)
-    
 
 
 def expense_category_summary(request):
