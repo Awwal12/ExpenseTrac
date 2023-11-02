@@ -11,8 +11,7 @@ from django.contrib import auth
 # Create your views here.
 
 
-def home(request):
-    return render(request, 'base.html')
+
 
 
 def register(request):
@@ -27,7 +26,7 @@ def register(request):
             login(request, user)
             messages.success(
                 request, "You Have Successfully Registered! Welcome!")
-            return redirect('expenseapp:home')
+            return redirect('expenses:index')
     else:
         form = CreateUserForm()
         return render(request, 'auth/register.html', {'form': form})
@@ -43,7 +42,7 @@ def my_login(request):
         if user is not None:
             login(request, user)
             messages.success(request, 'You are now logged in')
-            return redirect('expenseapp:home')
+            return redirect('expenses:index')
         messages.warning(
             request, 'Username or Password is incorrect', extra_tags='login')
         return render(request, 'auth/login.html')
@@ -55,9 +54,6 @@ def logout_user(request):
     messages.info(request, 'You are now logged out')
     return redirect('expenseapp:my_login')
 
-
-def dashboard(request):
-    return render(request, 'dashboard.html')
 
 
 def preferences(request):
