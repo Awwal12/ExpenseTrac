@@ -11,12 +11,11 @@ import datetime
 import csv
 from django.http import HttpResponse
 import xlwt
-import tempfile
-from django.template.loader import render_to_string, get_template
+from django.db.models import Q
+from django.template.loader import get_template
 from weasyprint import HTML
-import tempfile
 from django.db.models import Sum
-import io
+
 
 # Create your views here.
 
@@ -114,19 +113,17 @@ def delete_income(request, id):
 
 
 @login_required(login_url='expenseapp:my_login')
-def search_income(request):
-    if request.method == 'POST':
-        search_str = json.loads(request.body).get('searchText')
-        print(f"search_str: {search_str}")
-        income = Income.objects.filter(
-            amount__istartswith=search_str, owner=request.user) | Income.objects.filter(
-            date__istartswith=search_str, owner=request.user) | Income.objects.filter(
-            description__icontains=search_str, owner=request.user) | Income.objects.filter(
-            source__icontains=search_str, owner=request.user)
-        data = income.values()
-        print(f"Query results: {data}")
-        return JsonResponse(list(data), safe=False)
+def search_expenses(request):
+    query = request.GET.get('q', '')
+    currency = UserPreference.objects.get(user=request.user).currency
 
+    # Use Q objects to filter on multiple fields using OR logic
+    income = Income.objects.filter(
+        Q(description__icontains=query) |
+        Q(amount__icontains=query) |
+        Q(date__icontains=query)
+    )
+    return render(request, 'income/search_expense.html', {'page_obj': income, 'query': query, 'currency': currency})
 
 def income_source_summary(request):
     todays_date = datetime.date.today()
