@@ -9,6 +9,12 @@ from django.http import JsonResponse
 from expenseapp.models import UserPreference
 import datetime
 from django.db.models import Q
+import csv
+from django.http import HttpResponse
+import xlwt
+from django.template.loader import get_template
+from weasyprint import HTML
+from django.db.models import Sum
 # Create your views here.
 
 
@@ -169,3 +175,65 @@ def expense_category_summary(request):
 
 def stats_view(request):
     return render(request, 'expenses/stats.html')
+
+
+def export_excel(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename=Expenses.xls ' + \
+        str(datetime.datetime.now()) + '.xls'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Expenses')
+
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Amount', 'Description', 'Category', 'Date']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    font_style = xlwt.XFStyle()
+
+    rows = Expense.objects.filter(owner=request.user).values_list(
+        'amount', 'description', 'category', 'date')
+
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, str(row[col_num]), font_style)
+    wb.save(response)
+
+    return response
+
+
+def export_pdf(request):
+
+    expenses = Expense.objects.filter(owner=request.user)
+    total_expense = expenses.aggregate(Sum('amount'))['amount__sum']
+
+    html_template = get_template('expenses/pdf_output.html')
+    html_content = html_template.render({'expenses': expenses, 'total': total_expense})  # You should pass the context data if needed
+
+    pdf_file = HTML(string=html_content).write_pdf()
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=Expense report ' + \
+        str(datetime.datetime.now()) + '.pdf'
+    return response
+
+def export_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=Expenses.csv ' + \
+        str(datetime.datetime.now()) + '.csv'
+
+    writer = csv.writer(response)
+    writer.writerow(['Amount', 'Description', 'Category', 'Date'])
+
+    expenses = Expense.objects.filter(owner=request.user)
+
+    for expense in expenses :
+        writer.writerow([expense.amount, expense.description, expense.category, expense.date])
+
+    return response
