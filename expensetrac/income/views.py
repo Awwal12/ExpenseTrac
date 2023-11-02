@@ -113,7 +113,7 @@ def delete_income(request, id):
 
 
 @login_required(login_url='expenseapp:my_login')
-def search_expenses(request):
+def search_income(request):
     query = request.GET.get('q', '')
     currency = UserPreference.objects.get(user=request.user).currency
 
