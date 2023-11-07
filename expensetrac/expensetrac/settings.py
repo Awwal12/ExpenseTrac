@@ -10,10 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import dj_database_url
+import os
 from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
-import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,9 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True if os.environ.get('DEBUG', 'False') == "True" else False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOST').spilt(" ")
 
 
 # Application definition
@@ -111,10 +112,9 @@ WSGI_APPLICATION = 'expensetrac.wsgi.application'
 #     }
 # }
 
-import dj_database_url
 
 DATABASES = {
-    'default' : dj_database_url.parse(os.environ.get('RENDER_DB'))
+    'default': dj_database_url.parse(os.environ.get('RENDER_DB'))
 }
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
