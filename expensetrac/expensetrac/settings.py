@@ -10,9 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-import dj_database_url
 import os
 from pathlib import Path
+import dj_database_url
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -27,9 +27,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if os.environ.get('DEBUG', 'False') == "True" else False
+# DEBUG = True if os.environ.get('DEBUG', 'False') == "True" else False
+DEBUG = True
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOST').split(" ")
+# ALLOWED_HOSTS = os.environ.get('ALLOWED_HOST').split(" ")
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -102,20 +104,20 @@ WSGI_APPLICATION = 'expensetrac.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': os.environ.get('DB_NAME'),
-#         'USER': os.environ.get('DB_USER'),
-#         'PASSWORD': os.environ.get('DB_PASSWORD'),
-#         'HOST': os.environ.get('DB_HOST'),
-#     }
-# }
-
-
 DATABASES = {
-    'default': dj_database_url.parse(os.environ.get('RENDER_DB'))
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+    }
 }
+
+
+# DATABASES = {
+#     'default': dj_database_url.parse(os.environ.get('RENDER_DB'))
+# }
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
